@@ -39,3 +39,30 @@ When Host A sends data to Host B, the switch inspects the destination MAC addres
               (Ports C & D remain open for independent transfers!)
 Micro-Segmentation & Full-Duplex ModeBy isolating traffic per port, a switch micro-segments the network. Every single port on a switch becomes its own independent collision domain. Additionally, because modern switches operate in full-duplex mode, devices can send and receive data at the exact same time without signal interference.04. Detailed Comparison: Network Hub vs. SwitchFeatureNetwork HubNetwork SwitchOSI LayerLayer 1 (Physical)Layer 2 (Data Link) / Layer 3Device IntelligenceNone (Blind Repeater)High (Learns MAC addresses per port)Collision Domains1 single domain shared across all ports1 separate collision domain per portDuplex ModeHalf-Duplex (Send or Receive)Full-Duplex (Send and Receive simultaneously)PerformanceDegrades under heavy trafficHigh-speed, isolated traffic flow
 
+## 02. Learning About Collision Domains the Hard Way
+
+A **collision domain** is a network segment where data packets sent by two or more devices can physically collide on the shared medium, causing data corruption.
+
+When two devices connected to a hub attempt to talk at the exact same time:
+
+1. A **data collision** occurs on the physical wire.
+2. Both devices detect the voltage spike/signal interference.
+3. Both devices send out a **jam signal**, abort their transmission, and invoke a randomized backoff timer (CSMA/CD protocol) before trying again.
+
+> In a small network with minimal traffic, you might not notice the delay. But as soon as I started transferring large media files between multiple devices, collision after collision forced endless retries. My network performance plummeted—all because every device plugged into that hub was trapped inside **one single, crowded collision domain**.
+
+---
+
+## 03. The Evolutionary Bridge: Enter the Switch
+
+To solve the collision nightmare, networking hardware evolved through multi-port bridges, which matured into modern **Ethernet switches**.
+
+Unlike a hub, a switch operates at **Layer 2 (Data Link Layer)** and possesses hardware intelligence. It automatically builds an internal **MAC Address Table** by observing incoming traffic frames:
+
+```text
+// Switch Internal MAC Address Table
+Port 1 ==> AA:BB:CC:11:22:33 (Host A)
+Port 2 ==> AA:BB:CC:44:55:66 (Host B)
+Port 3 ==> (Unmapped)
+
+
